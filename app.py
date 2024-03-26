@@ -28,15 +28,28 @@ with st.sidebar:
 
 # Main content
 st.header("Record a Memory")
-if st.button("Start Recording"):
-    text = transcribe_audio()
-    if text:
-        log_entry = {"text": text}
-        log_filename = f"log_{len(logs)}.json"
-        with open(os.path.join(logs_dir, log_filename), "w") as f:
-            json.dump(log_entry, f)
-        logs.append(text)
-        st.success(f"Memory recorded: {text}")
+input_method = st.radio("Select Input Method", ("Speak", "Type"))
+
+if input_method == "Speak":
+    if st.button("Start Recording"):
+        text = transcribe_audio()
+        if text:
+            log_entry = {"text": text}
+            log_filename = f"log_{len(logs)}.json"
+            with open(os.path.join(logs_dir, log_filename), "w") as f:
+                json.dump(log_entry, f)
+            logs.append(text)
+            st.success(f"Memory recorded: {text}")
+else:
+    text_input = st.text_area("Type your memory:")
+    if st.button("Save Memory"):
+        if text_input:
+            log_entry = {"text": text_input}
+            log_filename = f"log_{len(logs)}.json"
+            with open(os.path.join(logs_dir, log_filename), "w") as f:
+                json.dump(log_entry, f)
+            logs.append(text_input)
+            st.success(f"Memory recorded: {text_input}")
 
 st.header("Chat with Your AI Companion")
 user_input = st.text_input("You:")
